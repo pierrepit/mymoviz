@@ -28,21 +28,24 @@ function App() {
 
   const toggle = () => setPopoverOpen(!popoverOpen);
 
-  useEffect(async () => {
-    const response = await fetch('/new-movies')
-    const jsonResponse = await response.json()
-    //console.log(jsonResponse)
-    setMovieList(jsonResponse.movies)
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch('/new-movies')
+      const jsonResponse = await response.json()
+      //console.log(jsonResponse)
+      setMovieList(jsonResponse.movies)
 
-    const responseWish = await fetch('wishlist-movie')
-    const jsonResponseWish = await responseWish.json()
+      const responseWish = await fetch('wishlist-movie')
+      const jsonResponseWish = await responseWish.json()
 
-    const wishlistFromDB = jsonResponseWish.movies.map((movie,i) => {
-      return {name:movie.movieName, img:movie.movieImg}
-    })
+      const wishlistFromDB = jsonResponseWish.movies.map((movie,i) => {
+        return {name:movie.movieName, img:movie.movieImg}
+      })
 
-    setMoviesWishList(wishlistFromDB)
-    setMoviesCount(jsonResponseWish.movies.length)
+      setMoviesWishList(wishlistFromDB)
+      setMoviesCount(jsonResponseWish.movies.length)
+    }
+    fetchData();
 
     //console.log(jsonResponseWish)
   }, [])
