@@ -29,7 +29,7 @@ function App() {
   const toggle = () => setPopoverOpen(!popoverOpen);
 
   useEffect(() => {
-    async function fetchData() {
+    async function loadData() {
       const response = await fetch('/new-movies')
       const jsonResponse = await response.json()
       //console.log(jsonResponse)
@@ -45,7 +45,7 @@ function App() {
       setMoviesWishList(wishlistFromDB)
       setMoviesCount(jsonResponseWish.movies.length)
     }
-    fetchData();
+    loadData();
 
     //console.log(jsonResponseWish)
   }, [])
