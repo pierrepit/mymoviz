@@ -21,6 +21,7 @@ function App() {
 	const [moviesCount, setMoviesCount] = useState(0);
 	const [moviesWishList, setMoviesWishList] = useState([]);
 	const [movieList, setMovieList] = useState([]);
+
 	const [popoverOpen, setPopoverOpen] = useState(false);
 
 	const toggle = () => setPopoverOpen(!popoverOpen);
@@ -30,11 +31,14 @@ function App() {
 			const response = await fetch('/new-movies');
 			const jsonResponse = await response.json();
 			setMovieList(jsonResponse.movies);
+
 			const responseWish = await fetch('wishlist-movie');
 			const jsonResponseWish = await responseWish.json();
-			const wishlistFromDB = jsonResponseWish.movies.map((movie, i) => {
+
+			const wishlistFromDB = jsonResponseWish.movies.map((movie) => {
 				return { name: movie.movieName, img: movie.movieImg };
 			});
+
 			setMoviesWishList(wishlistFromDB);
 			setMoviesCount(jsonResponseWish.movies.length);
 		}
@@ -45,7 +49,7 @@ function App() {
 		setMoviesCount(moviesCount + 1);
 		setMoviesWishList([...moviesWishList, { name: name, img: img }]);
 
-		const response = await fetch('/wishlist-movie', {
+		await fetch('/wishlist-movie', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 			body: `name=${name}&img=${img}`,
@@ -54,21 +58,22 @@ function App() {
 
 	var handleClickDeleteMovie = async (name) => {
 		setMoviesCount(moviesCount - 1);
-		setMoviesWishList(moviesWishList.filter((object) => object.name != name));
+		setMoviesWishList(moviesWishList.filter((object) => object.name !== name));
 
-		const response = await fetch(`/wishlist-movie/${name}`, {
+		await fetch(`/wishlist-movie/${name}`, {
 			method: 'DELETE',
 		});
 	};
 
 	var cardWish = moviesWishList.map((movie, i) => {
 		return (
-			<ListGroupItem>
+			<ListGroupItem key={i}>
 				<ListGroupItemText
 					onClick={() => {
 						handleClickDeleteMovie(movie.name);
 					}}
 				>
+					{/* eslint-disable-next-line jsx-a11y/alt-text */}
 					<img width='25%' src={movie.img} /> {movie.name}
 				</ListGroupItemText>
 			</ListGroupItem>
@@ -85,14 +90,14 @@ function App() {
 	// ]
 
 	var movieListItems = movieList.map((movie, i) => {
-		var result = moviesWishList.find((element) => element.name == movie.title);
+		var result = moviesWishList.find((element) => element.name === movie.title);
 		var isSee = false;
-		if (result != undefined) {
+		if (result !== undefined) {
 			isSee = true;
 		}
-		var result = movie.overview;
-		if (result.length > 80) {
-			result = result.slice(0, 80) + '...';
+		var movieOverview = movie.overview;
+		if (movieOverview.length > 80) {
+			movieOverview = movieOverview.slice(0, 80) + '...';
 		}
 
 		var urlImage = '/generique.jpg';
@@ -106,7 +111,7 @@ function App() {
 				handleClickDeleteMovieParent={handleClickDeleteMovie}
 				handleClickAddMovieParent={handleClickAddMovie}
 				movieName={movie.title}
-				movieDesc={result}
+				movieDesc={movieOverview}
 				movieImg={urlImage}
 				globalRating={movie.popularity}
 				globalCountRating={movie.vote_count}

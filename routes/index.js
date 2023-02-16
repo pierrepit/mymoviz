@@ -1,3 +1,4 @@
+const cookieParser = require('cookie-parser');
 var express = require('express');
 var router = express.Router();
 
@@ -5,14 +6,12 @@ var request = require('sync-request');
 
 var movieModel = require('../models/movies');
 
-require('dotenv').config();
-
 var myApiKey = process.env.API_KEY;
 
 router.get('/new-movies', function (req, res) {
 	var data = request(
 		'GET',
-		`https://api.themoviedb.org/3/discover/movie?api_key=${myApiKey}&language=fr-FR&region=FR&sort_by=release_date.desc&include_adult=false&include_video=false&page=1&release_date.lte=2020-01-01`
+		`https://api.themoviedb.org/3/discover/movie?api_key=${myApiKey}&language=fr-FR&region=FR&sort_by=release_date.desc&include_adult=false&include_video=false&page=1&release_date.lte=2023-01-01`
 	);
 	var dataParse = JSON.parse(data.body);
 

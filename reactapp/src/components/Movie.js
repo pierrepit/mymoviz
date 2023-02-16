@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import '../App.css';
 import { Button, Col, Card, CardImg, CardBody, CardTitle, CardText, Badge, ButtonGroup } from 'reactstrap';
 
@@ -15,7 +15,7 @@ function Movie(props) {
 	const [countRating] = useState(props.globalCountRating);
 
 	var changeLiked = (name, img) => {
-		if (props.movieSee == true) {
+		if (props.movieSee === true) {
 			props.handleClickDeleteMovieParent(name);
 		} else {
 			props.handleClickAddMovieParent(name, img);
@@ -41,13 +41,13 @@ function Movie(props) {
 	};
 
 	var tabRating = [];
-	for (var i = 0; i < 10; i++) {
-		var color = {};
+	for (let i = 0; i < 10; i++) {
+		let color = {};
 		if (i < myRatingMovie) {
 			color = { color: '#f1c40f' };
 		}
 		let count = i + 1;
-		tabRating.push(<FontAwesomeIcon onClick={() => setMyRating(count)} style={color} icon={faStar} />);
+		tabRating.push(<FontAwesomeIcon key={i} onClick={() => setMyRating(count)} style={color} icon={faStar} />);
 	}
 
 	var nbTotalNote = rating * countRating;
@@ -61,24 +61,26 @@ function Movie(props) {
 	var avgTotal = Math.round(nbTotalNote / nbTotalVote);
 
 	var tabGlobalRating = [];
-	for (var i = 0; i < 10; i++) {
-		var color = {};
+	for (let i = 0; i < 10; i++) {
+		let color = {};
 		if (i < avgTotal) {
 			color = { color: '#f1c40f' };
 		}
-		tabGlobalRating.push(<FontAwesomeIcon style={color} icon={faStar} />);
+		tabGlobalRating.push(<FontAwesomeIcon key={i} style={color} icon={faStar} />);
 	}
 
+	let colorLike;
 	if (props.movieSee) {
-		var colorLike = { color: '#e74c3c', cursor: 'pointer' };
+		colorLike = { color: '#e74c3c', cursor: 'pointer' };
 	} else {
-		var colorLike = { cursor: 'pointer' };
+		colorLike = { cursor: 'pointer' };
 	}
 
+	let colorWatch;
 	if (watchMovie) {
-		var colorWatch = { color: '#e74c3c' };
+		colorWatch = { color: '#e74c3c' };
 	} else {
-		var colorWatch = {};
+		colorWatch = {};
 	}
 
 	return (
@@ -93,7 +95,7 @@ function Movie(props) {
 						Nombre de vues <FontAwesomeIcon style={colorWatch} icon={faVideo} onClick={() => addWatch()} />{' '}
 						<Badge color='secondary'>{countWatchMovie}</Badge>
 					</p>
-					<p>
+					<>
 						Mon avis
 						{tabRating}
 						<ButtonGroup size='sm'>
@@ -104,7 +106,7 @@ function Movie(props) {
 								+
 							</Button>
 						</ButtonGroup>
-					</p>
+					</>
 					<p>
 						Moyenne
 						{tabGlobalRating}({nbTotalVote})
