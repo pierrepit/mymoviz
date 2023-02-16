@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import {
 	Container,
@@ -21,10 +21,8 @@ function App() {
 	const [moviesCount, setMoviesCount] = useState(0);
 	const [moviesWishList, setMoviesWishList] = useState([]);
 	const [movieList, setMovieList] = useState([]);
-
 	const [popoverOpen, setPopoverOpen] = useState(false);
-
-	const toggle = () => setPopoverOpen(!popoverOpen);
+	const ref = useRef(null);
 
 	useEffect(() => {
 		async function loadData() {
@@ -44,6 +42,21 @@ function App() {
 		}
 		loadData();
 	}, []);
+
+	useEffect(() => {
+		const handleClick = (event) => {
+			if (!ref.current?.contains(event.target)) {
+				console.log('useEffect');
+				setPopoverOpen(false);
+			}
+		};
+
+		document.addEventListener('click', handleClick, true);
+
+		return () => {
+			document.removeEventListener('click', handleClick, true);
+		};
+	}, [ref]);
 
 	var handleClickAddMovie = async (name, img) => {
 		setMoviesCount(moviesCount + 1);
@@ -134,10 +147,12 @@ function App() {
 							<Button id='Popover1' type='button'>
 								{moviesCount} films
 							</Button>
-							<Popover placement='bottom' isOpen={popoverOpen} target='Popover1' toggle={toggle}>
+							<Popover placement='bottom' isOpen={popoverOpen} target='Popover1' toggle={() => setPopoverOpen(true)}>
 								<PopoverHeader>WishList</PopoverHeader>
 								<PopoverBody>
-									<ListGroup>{cardWish}</ListGroup>
+									<div ref={ref}>
+										<ListGroup>{cardWish}</ListGroup>
+									</div>
 								</PopoverBody>
 							</Popover>
 						</NavLink>
